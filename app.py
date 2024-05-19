@@ -26,8 +26,15 @@ def proxy(subpath=''):
             allow_redirects=False
         )
 
-        resp = jsonify(response.json())
-        resp.status_code = response.status_code
+        try:
+            resp = jsonify(response.json())
+            resp.status_code = response.status_code
+        except ValueError:
+            resp = app.response_class(
+                response.content,
+                status=response.status_code,
+                headers=dict(response.headers)
+            )
 
         resp.headers['Access-Control-Allow-Origin'] = '*'
         resp.headers['Access-Control-Allow-Headers'] = '*'
