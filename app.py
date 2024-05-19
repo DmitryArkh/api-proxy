@@ -21,6 +21,7 @@ def proxy(subpath=''):
             method=request.method,
             url=target_url_with_path,
             headers={key: value for (key, value) in request.headers if key != 'Host'},
+            params=request.args.to_dict(),
             data=request.get_data(),
             cookies=request.cookies,
             allow_redirects=False
