@@ -15,6 +15,17 @@ CONFIG_PATH = 'config/proxy.yaml'
 config_map = {}
 last_config_hash = None
 
+HOP_BY_HOP_HEADERS = {
+    'connection',
+    'keep-alive',
+    'proxy-authenticate',
+    'proxy-authorization',
+    'te',
+    'trailers',
+    'transfer-encoding',
+    'upgrade'
+}
+
 logging.basicConfig(
     level=logging.INFO,
     format='[%(asctime)s] %(levelname)s in %(module)s: %(message)s',
@@ -78,14 +89,21 @@ def proxy(subpath=''):
             allow_redirects=False
         )
 
+        response_headers = {
+            key: value for key, value in response.headers.items()
+            if key.lower() not in HOP_BY_HOP_HEADERS
+        }
+
         try:
             resp = jsonify(response.json())
             resp.status_code = response.status_code
+            for key, value in response_headers.items():
+                resp.headers[key] = value
         except ValueError:
             resp = app.response_class(
                 response.content,
                 status=response.status_code,
-                headers=dict(response.headers)
+                headers=response_headers
             )
 
         resp.headers['Access-Control-Allow-Origin'] = '*'
