@@ -8,4 +8,5 @@ docker-compose.yml
 .venv
 README.md
 __pycache__
-config
+routes.yaml
+requirements.txt

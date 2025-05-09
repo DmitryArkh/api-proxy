@@ -1,10 +1,11 @@
-FROM python:3.13-alpine
+FROM nginx:alpine
+LABEL maintainer="DmitryArkh <contact@dmitryarkh.me>"
 
-COPY requirements.txt /app/requirements.txt
+RUN apk add --no-cache python3 py3-pip py3-yaml
+
 WORKDIR /app
-RUN pip install --no-cache-dir -r requirements.txt
 COPY . /app
 
-LABEL maintainer="DmitryArkh <contact@dmitryarkh.me>"
-CMD ["python", "app.py"]
+CMD ["sh", "-c", "python3 /app/main.py & nginx -g 'daemon off;'"]
+
 EXPOSE 5050
