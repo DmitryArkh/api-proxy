@@ -4,7 +4,7 @@ A simple proxy that helps to bypass CORS while interacting with an external API 
 ## Deploying with Docker
 ```bash
 docker run --name api-proxy \
-  -e API_HOST=<external host> \
-  -p 5000:5000 \
-  ghcr.io/dmitryarkh/api-proxy:main
+  --network host \
+  -v ./config:/app/config:ro \
+  ghcr.io/dmitryarkh/api-proxy:latest
 ```
